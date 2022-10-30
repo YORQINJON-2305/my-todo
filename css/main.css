@@ -1,0 +1,24 @@
+.edit-btn{
+    width: 20px;
+    height: 20px;
+    border: none;
+    background-color: transparent;
+    background-image: url("../images/edit.svg");
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.delete-btn{
+    width: 20px;
+    height: 20px;
+    border: none;
+    background-color: transparent;
+    background-image: url("../images/delete.svg");
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.close-btn{
+    top: 10px;
+    right: 15px;
+}

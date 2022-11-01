@@ -1,10 +1,12 @@
-const arr = [];
-
+let todos = JSON.parse(localStorage.getItem("todo-list"));
+const arr = todos || [];
 // get DOM item
 const elForm = document.querySelector(".todo-form");
 const elTaskInput = elForm.querySelector(".task-input");
 const elList = document.querySelector(".task-collection");
 const elTemplate = document.querySelector(".todo-template").content;
+
+const elAlertText = document.querySelector(".alert");
 
 //get Modal
 const elModalForm = document.querySelector(".modal-form");
@@ -25,20 +27,48 @@ elForm.addEventListener("submit", function (evt){
     evt.preventDefault();
     const taskInputValue = elTaskInput.value.trim();
 
-    elList.innerHTML = "";
+    if(taskInputValue){
+        displayAlertSuccess("Add item to the list", "success");
 
-    arr.push({
-        id: ++initialId,
-        task: taskInputValue,
-        isCompleted: false
-    })
-    renderTodo(arr);
+        arr.push({
+            id: ++initialId,
+            task: taskInputValue,
+            isCompleted: false
+        });
+        console.log(arr);
+        elList.innerHTML = "";
+        renderTodo(arr);
+        localStorage.setItem("todo-list", JSON.stringify(arr));
+    } else{
+        displayAlertWarning("Please enter value", "danger")
+    }
+
 });
+
+function displayAlertSuccess(text, action){
+    elAlertText.textContent = text;
+    elAlertText.classList.remove("alert-danger");
+    elAlertText.classList.add(`alert-${action}`, "alert-show");
+
+    setTimeout(() => {
+        elAlertText.classList.remove(`alert-${action}`, "alert-show");
+    }, 2000);
+}
+
+function displayAlertWarning(text, action){
+    elAlertText.textContent = text;
+    elAlertText.classList.remove("alert-danger");
+    elAlertText.classList.add(`alert-${action}`, "alert-show");
+
+    setTimeout(() => {
+        elAlertText.classList.remove(`alert-${action}`, "alert-show");
+    }, 2000);
+};
 
 function renderTodo(todos){
     elList.innerHTML = "";
     elAllCount.textContent = todos.length;
-
+    
     const filterComplete = todos.filter(function (item){
         return item.isCompleted;
     });
@@ -68,6 +98,7 @@ function renderTodo(todos){
 
     });
     elList.appendChild(newFragment);
+    localStorage.setItem("todo-list", JSON.stringify(arr));
 };
 
 let editingId;
@@ -75,7 +106,8 @@ elList.addEventListener("click", function (evt){
     if(evt.target.matches(".delete-btn")){
       const getBtnId = Number(evt.target.dataset.id);
       arr.splice(getBtnId, 1);
-      renderTodo(arr);
+        localStorage.setItem("todo-list", JSON.stringify(arr));
+        renderTodo(arr);
     }
 
     if(evt.target.matches(".edit-btn")){
@@ -94,10 +126,14 @@ elList.addEventListener("click", function (evt){
             return index === getCheckInputId;
         })
         foundCheckObj.isCompleted = !foundCheckObj.isCompleted;
-        renderTodo(arr)
+        localStorage.setItem("todo-list", JSON.stringify(arr));
+        renderTodo(arr);
     }
 
 });
+
+renderTodo(arr)
+
 
 
 
@@ -109,6 +145,7 @@ elModalForm.addEventListener("submit", function (evt){
         return item.id === editingId;
     });
     foundItem.task =    modalInputValue;
+    localStorage.setItem("todo-list", JSON.stringify(arr));
     renderTodo(arr);
 })
 
